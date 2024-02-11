@@ -23,7 +23,7 @@ Pothole Detection operates with remarkable efficiency:
 ### Google Drive setup
 
 Follow the instructions :
-> *[Google Drive API Setup](https://developers.google.com/drive/api/quickstart/python#install_the_google_client_library)*.
+> *[Google Drive API Setup](https://developers.google.com/drive/api/quickstart/python#objectives)*.
 
 > Go to Cloud console -> APIs & Services -> Credentials.
 
