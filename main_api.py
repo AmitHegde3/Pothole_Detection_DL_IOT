@@ -6,6 +6,7 @@ We add parsing from JSON files that contain configuration
 
 from pathlib import Path
 import sys
+sys.path.append("/home/frps/.local/lib/python3.11/site-packages")
 import cv2
 import depthai as dai
 import numpy as np
@@ -16,14 +17,20 @@ import blobconverter
 
 from gps_print import get_current_location
 from upload import main
+from buzzer_sound import buzz
 
 
 # parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("-m", "--model", help="Provide model name or model path for inference",
-                    default='best_openvino_2022.1_6shave.blob', type=str)
+                    default='/home/frps/Desktop/Pothole/Trained Models/Yolov7_Seniors/best_openvino_2022.1_6shave.blob', type=str)
 parser.add_argument("-c", "--config", help="Provide config path for inference",
-                    default='best.json', type=str)
+                    default='/home/frps/Desktop/Pothole/Trained Models/Yolov7_Seniors/best.json', type=str)
+                    #Relative path: ./Trained Models/Yolov7_Seniors/best.json
+                    #Relative blob path : ./Trained Models/Yolov7_Seniors/best_openvino_2022.1_6shave.blob
+                    #/home/frps/Desktop/Pothole/Trained Models/Yolov7_Seniors/best_openvino_2022.1_6shave.blob
+                    #/home/frps/Desktop/Pothole/Trained Models/Yolov7_Seniors/best.json
+                    
 args = parser.parse_args()
 
 # parse config
@@ -98,6 +105,8 @@ camRgb.preview.link(detectionNetwork.input)
 detectionNetwork.passthrough.link(xoutRgb.input)
 detectionNetwork.out.link(nnOut.input)
 
+buzz(2)
+
 # Connect to device and start pipeline
 with dai.Device(pipeline) as device:
 
@@ -126,18 +135,23 @@ with dai.Device(pipeline) as device:
             cv2.putText(frame, f"{int(detection.confidence * 100)}%", (bbox[0] + 10, bbox[1] + 40), cv2.FONT_HERSHEY_TRIPLEX, 0.5,(0,0, 255))
             cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color, 2)
             #li.append(detection.confidence * 100)
-        # Show the frame
-            if(detection.confidence>0.95):
+        # Show the frame-----------------------------------------------------------------------------
+            if(detection.confidence>0.93):
+                
+                buzz(2)
                 print(detection.confidence*100)
                 address = get_current_location()
                 print("Address fetched!")
                 cv2.putText(frame, address, (10,60), cv2.FONT_HERSHEY_SIMPLEX,0.7, (0, 0, 255),2)
                 cv2.imwrite("annotated_image.jpg", frame)
-                print("Image saved!")
-                #main()
+                
+                main()
                 print("Image Saved in Cloud")
+                buzz(3)
             
-        cv2.imshow(name,frame)
+       # cv2.imshow(name,frame)
+
+
 
     while True:
         inRgb = qRgb.get()
@@ -155,5 +169,5 @@ with dai.Device(pipeline) as device:
         if frame is not None:
             displayFrame("Pothole Detection", frame, detections)
 
-        if cv2.waitKey(1) == ord('q'):
-            break
+        #if cv2.waitKey(1) == ord('q'):
+          #  break
