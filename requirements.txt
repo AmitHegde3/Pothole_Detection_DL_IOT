@@ -2,3 +2,11 @@ opencv-python
 depthai>=2.19.1.0
 depthai-sdk>=1.9.1.1
 numpy>=1.18.5
+
+pyserial
+pynmea2
+geopy
+
+google-api-python-client
+google-auth-httplib2 
+google-auth-oauthlib

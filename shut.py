@@ -5,4 +5,4 @@ def shutdown_pi():
 	os.system("sudo shutdown -h now")
 
 # Call the function to shutdown the Raspberry Pi
-shutdown_pi()
+#shutdown_pi()

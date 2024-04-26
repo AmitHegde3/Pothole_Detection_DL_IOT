@@ -14,11 +14,17 @@ import time
 import argparse
 import json
 import blobconverter
+import os
+import datetime
 
 from gps_print import get_current_location
 from upload import main
 from buzzer_sound import buzz
+from LED import ledStart,ledBlink,ledBlue
 
+save_dir = 'detected_images'
+os.makedirs(save_dir,exist_ok=True)
+frame_count = 0
 
 # parse arguments
 parser = argparse.ArgumentParser()
@@ -105,7 +111,10 @@ camRgb.preview.link(detectionNetwork.input)
 detectionNetwork.passthrough.link(xoutRgb.input)
 detectionNetwork.out.link(nnOut.input)
 
-buzz(2)
+#buzz(2)
+ledBlue()
+ledStart()
+
 
 # Connect to device and start pipeline
 with dai.Device(pipeline) as device:
@@ -127,6 +136,7 @@ with dai.Device(pipeline) as device:
         return (np.clip(np.array(bbox), 0, 1) * normVals).astype(int)
 
     def displayFrame(name, frame, detections):
+        ledBlink()
         color = (255, 0, 0)
         #li = []
         for detection in detections:
@@ -138,18 +148,23 @@ with dai.Device(pipeline) as device:
         # Show the frame-----------------------------------------------------------------------------
             if(detection.confidence>0.93):
                 
-                buzz(2)
+                #buzz(2)
+                #ledStart()
+                ledBlue()
                 print(detection.confidence*100)
                 address = get_current_location()
                 print("Address fetched!")
                 cv2.putText(frame, address, (10,60), cv2.FONT_HERSHEY_SIMPLEX,0.7, (0, 0, 255),2)
                 cv2.imwrite("annotated_image.jpg", frame)
-                
-                main()
+                current_time = datetime.datetime.now()
+                image_name = current_time.strftime("detetced_iamge_%Y-%m-%d_%H-%M-%S.jpg")
+                cv2.imwrite(os.path.join(save_dir,image_name),frame)
+                #main()
                 print("Image Saved in Cloud")
-                buzz(3)
+                #buzz(3)
+                ledBlue()
             
-       # cv2.imshow(name,frame)
+        #cv2.imshow(name,frame)
 
 
 
