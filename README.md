@@ -34,8 +34,29 @@ Follow the instructions :
 > All set with Google Drive API!
 
 ### GPS setup
-
-------TO DO ---------- 
+* Power the module and it will automatically acquire satellite signals and a position fix. Once it has a position fix the module will blink the on board LED. This LED will continue to blink while the module has a position fix.
+  
+1. Hardware Part:
+   > Connect the pins, accordingly
+      Neo 6M VCC -----> Raspberry pi 5v
+		Neo 6M GND -----> Raspberry pi GND
+		Neo 6M  RX -----> Raspberry pi TX (gpio 14) 
+		Neo 6M  TX -----> Raspberry pi RX (gpio 15)
+  
+3. Software Part:
+   > First we need to edit the /boot/config.txt file.
+      * At the end of the file add the following lines:
+         dtparam=spi=on
+         dtoverlay=pi3-disable-bt
+         core_freq=250
+         enable_uart=1
+         force_turbo=1
+   	* Now save this by typing ctrl +x, then type y and press enter.
+   > Reboot the system.
+   > When the blue led is blinking, run the following command:
+      sudo cat /dev/ttyAMA0
+   
+   > Run gps.py file
 
 ## Usage 📝
 
