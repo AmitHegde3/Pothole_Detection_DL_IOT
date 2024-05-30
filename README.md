@@ -56,7 +56,7 @@ Follow the instructions :
    > When the blue led is blinking, run the following command:
       sudo cat /dev/ttyAMA0
    
-   > Run gps.py file
+   > Run gps_print.py file
 
 ## Usage 📝
 
